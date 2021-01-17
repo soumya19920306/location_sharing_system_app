@@ -1,0 +1,44 @@
+<div class="row h-10 float-left">
+  <div class="col-sm-4 float-left text-center">
+    <input class="btn btn-dark" type="button" value="Back" onclick="window.location.href = '/'" style="margin-top:10px;"/>
+  </div>
+</div>
+
+<div class="row h-10 float-right mr-1">
+  <div class="col-sm-4 float-right text-center">
+    <input class="btn btn-cust" type="button" value="Home" onclick="window.location.href = '/'" style="margin-top:10px;"/>
+  </div>
+</div>
+
+<br>
+<br>
+<br>
+
+<h5><b>All others users</b></h5>
+
+<table class="table table-condensed">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Show Publicly Shared Places</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if @all_users_list.present? %>
+      <% @all_users_list.each do |user| %>
+        <tr>
+          <td><%= user['username']  %></td>
+          <td><%= user['email']  %></td>
+          <td><%= user['show_button'].html_safe  %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+
+<script>
+function show_user_shared_location(username){
+  window.location.href = '/'+username;
+} 
+</script>

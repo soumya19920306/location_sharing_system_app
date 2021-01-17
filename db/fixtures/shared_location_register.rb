@@ -1,0 +1,16 @@
+SharedLocationRegister.seed(:id,
+  { :user_id=> 1, :longitude=> 88.43016744, :latitude=> 22.62604366 },
+  { :user_id=> 1, :longitude=> 74.2840421, :latitude=> 33.8785011 },
+  { :user_id=> 1, :longitude=> 88.4718932, :latitude=> 22.5934247 },
+  { :user_id=> 2, :longitude=> 88.2640112, :latitude=> 22.5973869 },
+  { :user_id=> 2, :longitude=> 88.2736242, :latitude=> 23.1714685 },
+  { :user_id=> 4, :longitude=> 87.7637241, :latitude=> 24.1817561 },
+  { :user_id=> 5, :longitude=> 73.7896573, :latitude=> 29.8776735 },
+  { :user_id=> 3, :longitude=> 87.7593533, :latitude=> 24.1796113 },
+  { :user_id=> 1, :longitude=> 88.43016744, :latitude=> 24.4981417 },
+  { :user_id=> 3, :longitude=> 84.5433058, :latitude=> 25.1105473 },
+  { :user_id=> 3, :longitude=> 87.9853317, :latitude=> 25.0926619 },
+  { :user_id=> 5, :longitude=> 71.5055266, :latitude=> 19.3300523 },
+  { :user_id=> 5, :longitude=> 87.9067796, :latitude=> 27.5973674 },
+  { :user_id=> 5, :longitude=> 88.5906785, :latitude=> 25.964437 }
+)

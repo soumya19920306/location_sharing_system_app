@@ -1,0 +1,271 @@
+
+<script src="javascripts/select2.js"></script>
+<style>
+  .modal-full{
+    min-width: 95%;
+    height: 95%;
+  }
+
+  tbody {
+    display:block;
+    height:400px;
+    overflow:auto;
+  }
+
+  thead, tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;/* even columns width , fix width of table too*/
+  }
+  thead {
+      width: calc( 100% - 1em )/* scrollbar is average 1em/16px width, remove it from thead width */
+  }
+  table {
+      width:400px;
+  }
+</style>
+
+
+<div class="row h-10  float-right mr-1">
+  <div class="col-sm-4 float-right text-center">
+    <input class="btn btn-primary" type="button" value="All Users" onclick="window.location.href = '/users_list'" style="margin-top:10px;"/>
+  </div>
+</div> 
+
+<div class="row h-10  float-left mr-3">
+  <div class="col-sm-4 float-left text-center">
+    <input class="btn btn-default" type="button" value="Share New Location" onclick="share_new_location()" style="margin-top:10px;" >
+  </div>
+</div>
+
+<div class="row h-10  float-left mr-3">
+  <div class="col-sm-4 float-left text-center">
+    <input class="btn btn-default" type="button" value="Location Shared with Me" onclick="window.location.href = '/location_shared_with_me'" style="margin-top:10px;" >
+</div>
+</div>
+</br>
+<div class="row h-10  ">
+  <div class="col-sm-100 text-center" style="margin:0 auto;">
+    <h5>Welcome: <b> <%= @username %> </b></h5>
+  </div>
+</div>
+
+</br>
+</br>
+
+<h5> <b> My Shared Locations: </b> </h5>
+
+<table class="table table-condensed">
+  <thead>
+    <tr>
+      <th>Latitude</th>
+      <th>Longitude</th>
+      <th>Share Mode</th>
+      <th>Share Date</th>
+      <th>Show on Map</th>
+      
+      <th>Delete Location</th>
+      <th>Modify Share</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if @my_shared_locations.present? %>
+      <% @my_shared_locations.each do |location| %>
+        <tr>
+          <td><%= location['latitude']  %></td>
+          <td><%= location['longitude']  %></td>
+          <td><%= location['shared_mode']  %></td>
+          <td><%= location['updated_at'][0..9]  %></td>
+          <td><%= location['show_on_map'].html_safe  %></td>
+          
+          <td><%= location['delete_location'].html_safe  %></td>
+          <td><%= location['share_location'].html_safe  %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+
+
+<div class="modal fade" id="shareLocationModal" tabindex="-1" role="dialog" aria-labelledby="shareLocationModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-full" role="document">
+    <div class="modal-content modal-full">
+      <div class="modal-header">
+        <h6 class="modal-title" id="shareLocationModalTitle">Share new location</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="showLocationModal" tabindex="-1" role="dialog" aria-labelledby="showLocationModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-full" role="document">
+    <div class="modal-content modal-full">
+      <div class="modal-header">
+        <h6 class="modal-title" id="showLocationModalTitle">Share new location</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="sharePreviousLocationModal" tabindex="-1" role="dialog" aria-labelledby="sharePreviousLocationModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="sharePreviousLocationModalTitle">Share Location</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="share_location();" id="modal_submit" >Share</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var sharable_user_list=<%= raw get_all_user_list_except_current_user.to_json %>;
+
+  function share_new_location(){
+    var iframe=" <iframe src='/share_new_location' class='w-100 h-100'></iframe> "
+    $("#shareLocationModal .modal-body").html(iframe);
+    $(shareLocationModal).modal(); 
+  } 
+
+  function show_location(longitude,latitude){
+    var query_str = "longitude="+longitude+"&latitude="+latitude;
+    var iframe=" <iframe src='/show_location?"+query_str+"' class='w-100 h-100'></iframe> "
+    $("#showLocationModal .modal-body").html(iframe);
+    $(showLocationModal).modal(); 
+  } 
+
+  function deleteLocation(location_id){
+    if (confirm("Are you sure to delete this shared location permanently?")) {
+      var data_srt="location_id="+location_id
+      $.ajax({
+        type: "POST",
+        url: '/delete_location',
+        data: data_srt,
+        headers: {
+          'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+        },
+        success: function(msg){            
+          alert(msg);
+          window.location.reload()
+        },complete: function (xhr, status) {
+          if(xhr.status==401){
+            alert(xhr.responseText)
+            window.location.reload();
+          }
+        }
+      });
+    }
+  }
+
+  function openLocationShareModal(location_id){
+    var html = "";
+		html += "<input type='hidden' id='location_id' name='location_id' value='"+location_id+"'/>"
+		html += "<div class='w-100 float-left'>";
+		html += "<p class='w-40 float-left' > Share Location as Public: </p>";
+		html += "<input type='checkbox' class='form-check-input' id='sharePublicChk' checked onclick='showHideSelectPeopleDiv(this);'/>";
+		html += "</div>";
+		html += "<div class='w-100 float-left d-none' id='selectPeopleDiv' >";
+		html += "<p class='w-40 float-left' > Select User(s): </p>";
+		html += "<select class='custom-select' id='filtering' style='width:300px;' >";
+		$.each(sharable_user_list, function( index, value ) {
+			html +="<option value="+value.id+">"+value.email+"</option>";
+		});
+		html += "</select>";
+		html += "</div>";
+		
+		$("#sharePreviousLocationModal .modal-body").html(html);
+		$("#filtering").select2( {
+			placeholder: "Select People...",
+			allowClear: true,
+			multiple: true
+		} );
+		$("#sharePreviousLocationModal").modal(); 
+
+  }
+	
+	function showHideSelectPeopleDiv(obj){
+		if(obj.checked){
+			$("#selectPeopleDiv").addClass("d-none");
+		}else{
+			$("#selectPeopleDiv").removeClass("d-none");
+		}
+	}
+	
+	function share_location(){
+		$('#modal_submit').attr("disabled","disabled");
+		$('#modal_submit').html("<span class='spinner-border spinner-border-sm'></span>  Share")
+		var location_id=$("#location_id").val();
+		var isPublic=$("#sharePublicChk").prop("checked");
+		user_id_arr=['public'];
+		if(!isPublic){
+			user_id_arr=$("#filtering").val();
+		}
+		if(user_id_arr.length==0){
+			alert("Please select atleast one people.");
+			$('#modal_submit').removeAttr("disabled");
+			$('#modal_submit').html("Share");	
+			return;
+		}
+		data_srt="location_id="+location_id+"&user_id_arr="+user_id_arr;
+		 $.ajax({
+			type: "POST",
+			url: '/share_old_location',
+			data: data_srt,
+			headers: {
+				'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+			},
+			success: function(msg){            
+				$('#sharePreviousLocationModal').modal('hide');
+				alert(msg);
+				$('#modal_submit').removeAttr("disabled");
+				$('#modal_submit').html("Share");				   
+			},complete: function (xhr, status) {
+				if(xhr.status==401){
+					alert(xhr.responseText)
+				}
+				parent.window.location.reload();
+			}
+		});
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+

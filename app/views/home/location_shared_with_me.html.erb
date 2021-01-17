@@ -1,0 +1,72 @@
+<style>
+  .modal-full{
+    min-width: 95%;
+    height: 95%;
+  }
+</style>
+
+<div class="row h-10 float-left">
+  <div class="col-sm-4 float-left text-center">
+    <input class="btn btn-dark" type="button" value="Back" onclick="window.location.href = '/'" style="margin-top:10px;"/>
+  </div>
+</div>
+
+<div class="row h-10 float-right mr-1">
+  <div class="col-sm-4 float-right text-center">
+    <input class="btn btn-cust" type="button" value="Home" onclick="window.location.href = '/'" style="margin-top:10px;"/>
+  </div>
+</div>
+
+<br>
+<br>
+<br>
+
+<h5><b>Location Shared with Me:</b></h5>
+
+<table class="table table-condensed">
+  <thead>
+    <tr>
+      <th>Shared By</th>
+      <th>Latitude</th>
+      <th>Longitude</th>
+      <th>Show on Map</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if @location_shared_with_me_obj.present? %>
+      <%  @location_shared_with_me_obj.each do |location| %>
+        <tr>
+          <td><%= location['username']  %></td>
+          <td><%= location['latitude']  %></td>
+          <td><%= location['longitude']  %></td>
+          <td><%= location['show_on_map'].html_safe  %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="modal fade" id="showLocationModal" tabindex="-1" role="dialog" aria-labelledby="showLocationModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-full" role="document">
+    <div class="modal-content modal-full">
+      <div class="modal-header">
+        <h6 class="modal-title" id="showLocationModalTitle">Share new location</h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function show_location(longitude,latitude){
+    var query_str = "longitude="+longitude+"&latitude="+latitude;
+    var iframe=" <iframe src='/show_location?"+query_str+"' class='w-100 h-100'></iframe> "
+    $("#showLocationModal .modal-body").html(iframe);
+    $(showLocationModal).modal(); 
+  } 
+</script>
