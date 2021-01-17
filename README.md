@@ -100,15 +100,9 @@ To load sample data from from seed file:
 rails db:reset
 
 # Now load seed data to db
-
 rails db:seed_fu
 
-
 ```
-
-* ...
-=======
-
 
 ### References
 * https://gorails.com/setup/windows/10
@@ -116,5 +110,3 @@ rails db:seed_fu
 * https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-database
 
 * https://www.rubydoc.info/gems/seed-fu/2.3.9
-
-(NOTE: best view in Mozilla Firefox browser)
