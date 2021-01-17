@@ -82,13 +82,13 @@ rails s
 
 ## Project deployed in Heroku for set up 
 ### Requirements:
-* A free Heroku account.
-* Ruby 2.3.5 installed locally
-* Bundler installed locally - run gem install bundler.
+* A Heroku user account.
+* A locally installed version of Ruby 2.5.0+, Rubygems, Bundler, and Rails 6+.
+* Basic familiarity with Ruby/Rails and Git.
 
 * Reference:
 '''
-https://devcenter.heroku.com/articles/getting-started-with-ruby
+https://devcenter.heroku.com/articles/getting-started-with-rails6
 '''
 
 ### Load sample data from seed file
