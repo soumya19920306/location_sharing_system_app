@@ -9,7 +9,7 @@
 
 * Rails version: 6.1.1
 
-* Database: PostgreSQL (Version: 10)
+* Database: PostgreSQL (Version: 10.15)
 
 ### Installation
 
@@ -86,10 +86,7 @@ rails s
 * A locally installed version of Ruby 2.5.0+, Rubygems, Bundler, and Rails 6+.
 * Basic familiarity with Ruby/Rails and Git.
 
-* Reference:
-'''
-https://devcenter.heroku.com/articles/getting-started-with-rails6
-'''
+* Reference: https://devcenter.heroku.com/articles/getting-started-with-rails6
 
 ### Load sample data from seed file
 To load sample data from from seed file:
