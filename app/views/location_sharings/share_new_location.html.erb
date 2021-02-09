@@ -2,10 +2,9 @@
 <%= csp_meta_tag %>
 
 <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-<%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+<%= javascript_pack_tag 'share_new_location', 'data-turbolinks-track': 'reload' %>
 
-<script src="javascripts/select2.js"></script>
-<script src="javascripts/ol.js"></script>
+
 
 <style>
   .ol-popup {
@@ -55,8 +54,6 @@
   }
 </style>
 
-
-
 <div class="container-fluid h-100">
  	<div class="w-100 d-inline-block" style="height: 95%;">
 		<div id='js-map' class='map'></div>
@@ -66,7 +63,6 @@
 		</div>
 	</div>
 </div>
-
 
 <!-- Modal -->
 <div class="modal fade" id="shareLocationModal" tabindex="-1" role="dialog" aria-labelledby="shareLocationModalTitle" aria-hidden="true">
@@ -83,211 +79,13 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" onclick="share_location();" id="modal_submit" >Share</button>
+        <button type="button" class="btn btn-primary" id="modal_submit" >Share</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  var map;
-  var view;
-  var container = document.getElementById('popup');
-  var content = document.getElementById('popup-content');
-  var closer = document.getElementById('popup-closer');
-  var sharable_user_list=<%= raw get_all_user_list_except_current_user.to_json %>;
-  var overlay = new ol.Overlay({
-    element: container,
-    autoPan: true,
-    autoPanAnimation: {
-      duration: 250
-    }
-  });
-	
-  closer.onclick = function() {
-    overlay.setPosition(undefined);
-    closer.blur();
-    return false;
-  };
-	
-  $( document ).ready(function() {
-    find_current_location();
-  });
-
-  function find_current_location(){
-	if (navigator.geolocation) {
-      var options = {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 1
-      };
-         
-      function success(pos) {
-        var crd = pos.coords;
-        var lat = crd.latitude;
-        var lng = crd.longitude;
-        init_map([lng,lat]);
-      }
-    
-      function error(err) {
-        // If geo location not supported in current browser, load the map with default position
-        var default_coordinates = <%= LocationSharingsHelper.get_default_coordinates %>;
-        init_map(default_coords);
-        console.warn(`ERROR(${err.code}): ${err.message}`);
-      }
-      navigator.geolocation.getCurrentPosition(success, error, options); 		
-	} else {
-      alert('Geo Location feature is not supported in this browser.');
-	}
-  }
-    
-	function init_map(coordinate){
-		view = new ol.View({
-			center: ol.proj.fromLonLat(coordinate),
-			zoom: 12,
-			maxZoom: 20
-		});
-		
-		map = new ol.Map({
-			layers: [
-			  new ol.layer.Tile({
-				source: new ol.source.OSM()
-			  })
-			],
-			target: 'js-map',
-			controls: ol.control.defaults({
-			  attributionOptions: {
-				collapsible: false
-			  }
-			}),
-			overlays: [overlay],
-			view: view
-		});
-		
-		addLocationPoint(ol.proj.fromLonLat(coordinate),"myCurrentPosition",[255,0,0]);
-		
-		map.on('singleclick', function(e) {
-			removeLocationPoint('MarkerPointLayer');
-			var coords = map.getCoordinateFromPixel(e.pixel);
-			var zoomLevel=view.getZoom();
-			addLocationPoint(coords,'MarkerPointLayer',[121,82,0]);
-			var hdms = ol.coordinate.toStringHDMS(coords);
-			var coordinate=ol.proj.transform(coords, "EPSG:3857", "EPSG:4326");
-			customHTML = '<p>You clicked here:</p><code>' + hdms + '</code>';
-			customHTML += '<button type="button" class="btn btn-primary" style="margin-left: 50px;" onclick="openLocationShareModal('+coordinate+');">Share</button>'
-			content.innerHTML=customHTML;
-			overlay.setPosition(coords);
-		})
-	}
-	
-	function addLocationPoint(coords,layerName,pointerColor){
-		var iconFeature = new ol.Feature({
-			geometry: new ol.geom.Point(coords)
-		});
-		var iconStyle = new ol.style.Style({
-			image: new ol.style.Icon({
-				color: pointerColor,
-				anchor: [0.5, 0.5],
-				anchorXUnits: 'fraction',
-				anchorYUnits: 'fraction',
-				src: 'https://www.google.co.in/maps/vt/icon/name=assets/icons/spotlight/spotlight_pin_v3_shadow-1-small.png,assets/icons/spotlight/spotlight_pin_v3-1-small.png,assets/icons/spotlight/spotlight_pin_v3_dot-1-small.png&highlight=ff000000,ea4335,a50e0e?scale=1',
-				crossOrigin: 'anonymous',
-			})
-		});
-    iconFeature.setStyle(iconStyle);
-    
-    var layer = new ol.layer.Vector({
-			source: new ol.source.Vector({
-				features: [
-					iconFeature
-				]
-			})
-    });
-    layer.set('name', layerName)
-    map.addLayer(layer);
-	}
-	
-	function removeLocationPoint(layerName){
-		try {
-			map.getLayers().forEach(function (layer) {
-				if (layer.get('name') != undefined && layer.get('name') === layerName) {
-					map.removeLayer(layer);
-				}
-			});
-		}catch(err) {
-
-		};
-	}
-
-	function openLocationShareModal(lng,lat){
-		var html = "";
-		html += "<input type='hidden' id='lng' name='lng' value='"+lng+"'/>"
-		html += "<input type='hidden' id='lat' name='lat' value='"+lat+"'/>"
-		html += "<div class='w-100 float-left'>";
-		html += "<p class='w-40 float-left' > Share Location as Public: </p>";
-		html += "<input type='checkbox' class='form-check-input' id='sharePublicChk' checked onclick='showHideSelectPeopleDiv(this);' style='margin:7 0 0 10;'/>";
-		html += "</div>";
-		html += "<div class='w-100 float-left d-none' id='selectPeopleDiv' >";
-		html += "<p class='w-40 float-left' > Select User(s): </p>";
-		html += "<select class='custom-select' id='filtering' style='width:300px;' >";
-		$.each(sharable_user_list, function( index, value ) {
-			html +="<option value="+value.id+">"+value.email+"</option>";
-		});
-		html += "</select>";
-		html += "</div>";
-		
-		$("#shareLocationModal .modal-body").html(html);
-		$("#filtering").select2( {
-			placeholder: "Select People...",
-			allowClear: true,
-			multiple: true
-		} );
-		$("#shareLocationModal").modal(); 
-	}	
-	
-	function showHideSelectPeopleDiv(obj){
-		if(obj.checked){
-			$("#selectPeopleDiv").addClass("d-none");
-		}else{
-			$("#selectPeopleDiv").removeClass("d-none");
-		}
-	}
-	
-	function share_location(){
-		$('#modal_submit').attr("disabled","disabled");
-		$('#modal_submit').html("<span class='spinner-border spinner-border-sm'></span>  Share")
-		var lng=$("#lng").val();
-		var lat=$("#lat").val();
-		var isPublic=$("#sharePublicChk").prop("checked");
-		user_id_arr=['public'];
-		if(!isPublic){
-			user_id_arr=$("#filtering").val();
-		}
-		if(user_id_arr.length==0){
-			alert("Please select atleast one people.");
-			$('#modal_submit').removeAttr("disabled");
-			$('#modal_submit').html("Share");	
-			return;
-		}
-		data_srt="latitude="+lat+"&longitude="+lng+"&user_id_arr="+user_id_arr
-		 $.ajax({
-			type: "POST",
-			url: '/save_new_shared_location',
-			data: data_srt,
-			headers: {
-				'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
-			},
-			success: function(msg){            
-				$('#shareLocationModal').modal('hide');
-				alert(msg);
-				$('#modal_submit').removeAttr("disabled");
-				$('#modal_submit').html("Share");				   
-			},complete: function (xhr, status) {
-				if(xhr.status==401){
-					alert(xhr.responseText)
-				}
-				parent.window.location.reload();
-			}
-		});
-	}
+  var sharableUserList = <%= raw get_all_user_list_except_current_user.to_json %>;
+  var formAuthenticityToken = '<%= form_authenticity_token.to_s %>';
 </script>

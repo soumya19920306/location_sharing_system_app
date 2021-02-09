@@ -11,6 +11,7 @@ import "channels"
 import jquery from 'jquery';
 window.$ = window.jquery = jquery;
 import "bootstrap"
+import "select2"
 
 import('../styles/application.css');
 
