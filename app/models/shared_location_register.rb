@@ -22,7 +22,6 @@ class SharedLocationRegister < ApplicationRecord
 		shared_location_objs.each do |loc|
 			_inner_hash = loc.as_json
 			_inner_hash["username"] = loc.user.username
-			_inner_hash["show_on_map"] = "<input class='btn-cust' type='button' value='Show' onclick='show_location("+loc.longitude.to_s+","+loc.latitude.to_s+")' />"
 			respond_obj << _inner_hash
 		end
 		return respond_obj
@@ -41,9 +40,6 @@ class SharedLocationRegister < ApplicationRecord
 		respond_obj = []
 		shared_location_objs.each do |loc|
 			_inner_hash = loc.as_json
-			_inner_hash["show_on_map"] = "<input class='btn-cust' type='button' value='Show' onclick='show_location("+loc.longitude.to_s+","+loc.latitude.to_s+")' />"
-			_inner_hash["share_location"] = "<input class='btn-cust' type='button' value='Share' onclick='openLocationShareModal("+loc.id.to_s+")' />"
-			_inner_hash["delete_location"] = "<input class='btn-cust' type='button' value='Delete' onclick='deleteLocation("+loc.id.to_s+")' />"
 			shared_user_id = loc.shared_location_user_mappings.pluck(:shared_user_id)
 			if shared_user_id.present? && shared_user_id.length == 1 && shared_user_id.include?(0)
 				_inner_hash["shared_mode"] = "Public"

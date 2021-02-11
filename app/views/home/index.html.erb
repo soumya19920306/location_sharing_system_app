@@ -75,10 +75,9 @@
           <td><%= location['longitude']  %></td>
           <td><%= location['shared_mode']  %></td>
           <td><%= location['updated_at'][0..9]  %></td>
-          <td><%= location['show_on_map'].html_safe  %></td>
-          
-          <td><%= location['delete_location'].html_safe  %></td>
-          <td><%= location['share_location'].html_safe  %></td>
+          <td><%= button_html_creator_for_locations('Show','show_location',location['latitude'],location['longitude']).html_safe  %></td>
+          <td><%= button_html_creator_for_locations('Share','openLocationShareModal',location['latitude'],location['longitude']).html_safe  %></td>
+          <td><%= button_html_creator_for_locations('Delete','deleteLocation',location['latitude'],location['longitude']).html_safe  %></td>
         </tr>
       <% end %>
     <% end %>

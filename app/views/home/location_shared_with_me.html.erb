@@ -39,7 +39,7 @@
           <td><%= location['username']  %></td>
           <td><%= location['latitude']  %></td>
           <td><%= location['longitude']  %></td>
-          <td><%= location['show_on_map'].html_safe  %></td>
+          <td><%= button_html_creator_for_locations('Show','show_location',location['latitude'],location['longitude']).html_safe  %></td>
         </tr>
       <% end %>
     <% end %>

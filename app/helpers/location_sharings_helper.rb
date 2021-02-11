@@ -10,4 +10,12 @@ module LocationSharingsHelper
   def get_all_user_list_except_current_user
     User.fetch_all_users(current_user.id)
   end
+
+  def button_html_creator_for_locations(value,method,latitude,longitude)
+    html_str = "<input class='btn-cust' type='button' value='#{value}' onclick='#{method}(#{longitude.to_s},#{latitude.to_s})' />"
+  end
+
+  def button_html_creator_for_users(user_name)
+    html_str = "<input class='btn-cust' type='button' value='Show' onclick='show_user_shared_location(\"#{user_name.to_s}\")' />"
+  end
 end

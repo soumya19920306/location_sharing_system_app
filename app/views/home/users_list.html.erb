@@ -30,7 +30,7 @@
         <tr>
           <td><%= user['username']  %></td>
           <td><%= user['email']  %></td>
-          <td><%= user['show_button'].html_safe  %></td>
+          <td><%= button_html_creator_for_users(user['username']).html_safe %></td>
         </tr>
       <% end %>
     <% end %>
