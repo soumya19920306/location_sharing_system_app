@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+	has_many :shared_location_registers, dependent: :destroy
+  
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 

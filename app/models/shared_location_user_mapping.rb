@@ -44,10 +44,9 @@ class SharedLocationUserMapping < ApplicationRecord
 
   #insert mapping data user wise
   def self.insert_location_mapping_with_user(location_id,user_id)
-    mapping_obj = SharedLocationUserMapping.new
-    mapping_obj["shared_location_register_id"] = location_id
-    mapping_obj["shared_user_id"] = user_id
-    mapping_obj.save
-    puts mapping_obj.to_json
+    @shared_location_registers = SharedLocationRegister.find(location_id)
+    @mapping_obj = @shared_location_registers.shared_location_user_mappings.new
+    @mapping_obj.shared_user_id = user_id
+    @mapping_obj.save
   end
 end
