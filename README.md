@@ -107,3 +107,9 @@ rails db:seed_fu
 * https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-database
 
 * https://www.rubydoc.info/gems/seed-fu/2.3.9
+
+* https://gorails.com/episodes/webpacker-javascript-in-rails-6
+
+* https://www.botreetechnologies.com/blog/introducing-jquery-in-rails-6-using-webpacker/
+
+* https://www.mashrurhossain.com/blog/rails6bootstrap4
