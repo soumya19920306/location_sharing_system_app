@@ -5,10 +5,10 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
 
-  devise_scope :user do		
-		get 'login', to: 'users/sessions#new'
-		get 'logout', to: 'users/sessions#destroy'
-		get 'users', to: 'users/registrations#new'
+  devise_scope :user do
+    get 'login', to: 'users/sessions#new'
+    get 'logout', to: 'users/sessions#destroy'
+    get 'users', to: 'users/registrations#new'
   end
   
   #location_sharings controller

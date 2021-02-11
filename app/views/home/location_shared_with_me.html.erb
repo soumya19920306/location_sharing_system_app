@@ -16,11 +16,9 @@
     <input class="btn btn-secondary" type="button" value="Home" onclick="window.location.href = '/'" style="margin-top:10px;"/>
   </div>
 </div>
-
 <br>
 <br>
 <br>
-
 <h5><b>Location Shared with Me:</b></h5>
 
 <table class="table table-condensed">
@@ -36,10 +34,10 @@
     <% if @location_shared_with_me_obj.present? %>
       <%  @location_shared_with_me_obj.each do |location| %>
         <tr>
-          <td><%= location['username']  %></td>
-          <td><%= location['latitude']  %></td>
-          <td><%= location['longitude']  %></td>
-          <td><%= button_html_creator_for_locations('Show','show_location',location['latitude'],location['longitude']).html_safe  %></td>
+          <td><%= location['username'] %></td>
+          <td><%= location['latitude'] %></td>
+          <td><%= location['longitude'] %></td>
+          <td><%= button_html_creator_for_location_show('Show', 'show_location', location['latitude'], location['longitude']).html_safe %></td>
         </tr>
       <% end %>
     <% end %>

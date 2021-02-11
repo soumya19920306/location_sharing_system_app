@@ -1,4 +1,3 @@
-
 <style>
   .modal-full{
     min-width: 95%;
@@ -17,10 +16,10 @@
     table-layout:fixed;/* even columns width , fix width of table too*/
   }
   thead {
-      width: calc( 100% - 1em )/* scrollbar is average 1em/16px width, remove it from thead width */
+    width: calc( 100% - 1em )/* scrollbar is average 1em/16px width, remove it from thead width */
   }
   table {
-      width:400px;
+    width:400px;
   }
 </style>
 
@@ -71,13 +70,13 @@
     <% if @my_shared_locations.present? %>
       <% @my_shared_locations.each do |location| %>
         <tr>
-          <td><%= location['latitude']  %></td>
-          <td><%= location['longitude']  %></td>
-          <td><%= location['shared_mode']  %></td>
-          <td><%= location['updated_at'][0..9]  %></td>
-          <td><%= button_html_creator_for_locations('Show','show_location',location['latitude'],location['longitude']).html_safe  %></td>
-          <td><%= button_html_creator_for_locations('Share','openLocationShareModal',location['latitude'],location['longitude']).html_safe  %></td>
-          <td><%= button_html_creator_for_locations('Delete','deleteLocation',location['latitude'],location['longitude']).html_safe  %></td>
+          <td><%= location['latitude'] %></td>
+          <td><%= location['longitude'] %></td>
+          <td><%= location['shared_mode'] %></td>
+          <td><%= location['updated_at'][0..9] %></td>
+          <td><%= button_html_creator_for_location_show('Show', 'show_location', location['latitude'], location['longitude']).html_safe %></td>
+          <td><%= button_html_creator_for_location_share_delete('Share', 'openLocationShareModal', location['id']).html_safe %></td>
+          <td><%= button_html_creator_for_location_share_delete('Delete', 'deleteLocation', location['id']).html_safe %></td>
         </tr>
       <% end %>
     <% end %>
@@ -138,17 +137,17 @@
 </div>
 
 <script>
-  var sharable_user_list=<%= raw get_all_user_list_except_current_user.to_json %>;
+  var sharable_user_list = <%= raw get_all_user_list_except_current_user.to_json %>;
 
   function share_new_location(){
-    var iframe=" <iframe src='/share_new_location' class='w-100 h-100'></iframe> "
+    var iframe = " <iframe src='/share_new_location' class='w-100 h-100'></iframe> "
     $("#shareLocationModal .modal-body").html(iframe);
     $(shareLocationModal).modal(); 
-  } 
+  }
 
   function show_location(longitude,latitude){
-    var query_str = "longitude="+longitude+"&latitude="+latitude;
-    var iframe=" <iframe src='/show_location?"+query_str+"' class='w-100 h-100'></iframe> "
+    var query_str = "longitude=" + longitude + "&latitude=" + latitude;
+    var iframe=" <iframe src='/show_location?" + query_str + "' class='w-100 h-100'></iframe> "
     $("#showLocationModal .modal-body").html(iframe);
     $(showLocationModal).modal(); 
   } 
@@ -163,7 +162,7 @@
         headers: {
           'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
         },
-        success: function(msg){            
+        success: function(msg){
           alert(msg);
           window.location.reload()
         },complete: function (xhr, status) {
@@ -178,92 +177,71 @@
 
   function openLocationShareModal(location_id){
     var html = "";
-		html += "<input type='hidden' id='location_id' name='location_id' value='"+location_id+"'/>"
-		html += "<div class='w-100 float-left'>";
-		html += "<p class='w-40 float-left' > Share Location as Public: </p>";
-		html += "<input type='checkbox' class='form-check-input' id='sharePublicChk' checked onclick='showHideSelectPeopleDiv(this);' style='margin-left:10px;'/>";
-		html += "</div>";
-		html += "<div class='w-100 float-left d-none' id='selectPeopleDiv' >";
-		html += "<p class='w-40 float-left' > Select User(s): </p>";
-		html += "<select class='custom-select' id='filtering' style='width:300px;' >";
-		$.each(sharable_user_list, function( index, value ) {
-			html +="<option value="+value.id+">"+value.email+"</option>";
-		});
-		html += "</select>";
-		html += "</div>";
-		
-		$("#sharePreviousLocationModal .modal-body").html(html);
-		$("#filtering").select2( {
-			placeholder: "Select People...",
-			allowClear: true,
-			multiple: true
-		} );
-		$("#sharePreviousLocationModal").modal(); 
+    html += "<input type='hidden' id='location_id' name='location_id' value='"+location_id+"'/>"
+    html += "<div class='w-100 float-left'>";
+    html += "<p class='w-40 float-left' > Share Location as Public: </p>";
+    html += "<input type='checkbox' class='form-check-input' id='sharePublicChk' checked onclick='showHideSelectPeopleDiv(this);' style='margin-left:10px;'/>";
+    html += "</div>";
+    html += "<div class='w-100 float-left d-none' id='selectPeopleDiv' >";
+    html += "<p class='w-40 float-left' > Select User(s): </p>";
+    html += "<select class='custom-select' id='filtering' style='width:300px;' >";
+    $.each(sharable_user_list, function( index, value ) {
+      html +="<option value="+value.id+">"+value.email+"</option>";
+    });
+    html += "</select>";
+    html += "</div>";
 
+    $("#sharePreviousLocationModal .modal-body").html(html);
+    $("#filtering").select2( {
+      placeholder: "Select People...",
+      allowClear: true,
+      multiple: true
+    } );
+    $("#sharePreviousLocationModal").modal();
   }
-	
-	function showHideSelectPeopleDiv(obj){
-		if(obj.checked){
-			$("#selectPeopleDiv").addClass("d-none");
-		}else{
-			$("#selectPeopleDiv").removeClass("d-none");
-		}
-	}
-	
-	function share_location(){
-		$('#modal_submit').attr("disabled","disabled");
-		$('#modal_submit').html("<span class='spinner-border spinner-border-sm'></span>  Share")
-		var location_id=$("#location_id").val();
-		var isPublic=$("#sharePublicChk").prop("checked");
-		user_id_arr=['public'];
-		if(!isPublic){
-			user_id_arr=$("#filtering").val();
-		}
-		if(user_id_arr.length==0){
-			alert("Please select atleast one people.");
-			$('#modal_submit').removeAttr("disabled");
-			$('#modal_submit').html("Share");	
-			return;
-		}
-		data_srt="location_id="+location_id+"&user_id_arr="+user_id_arr;
-		 $.ajax({
-			type: "POST",
-			url: '/share_old_location',
-			data: data_srt,
-			headers: {
-				'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
-			},
-			success: function(msg){            
-				$('#sharePreviousLocationModal').modal('hide');
-				alert(msg);
-				$('#modal_submit').removeAttr("disabled");
-				$('#modal_submit').html("Share");				   
-			},complete: function (xhr, status) {
-				if(xhr.status==401){
-					alert(xhr.responseText)
-				}
-				parent.window.location.reload();
-			}
-		});
-	}
 
+  function showHideSelectPeopleDiv(obj){
+    if(obj.checked){
+      $("#selectPeopleDiv").addClass("d-none");
+    }else{
+      $("#selectPeopleDiv").removeClass("d-none");
+    }
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  function share_location(){
+    $('#modal_submit').attr("disabled","disabled");
+    $('#modal_submit').html("<span class='spinner-border spinner-border-sm'></span> Share")
+    var location_id = $("#location_id").val();
+    var isPublic = $("#sharePublicChk").prop("checked");
+    user_id_arr = ['public'];
+    if(!isPublic){
+      user_id_arr = $("#filtering").val();
+    }
+    if(user_id_arr.length == 0){
+      alert("Please select atleast one people.");
+      $('#modal_submit').removeAttr("disabled");
+      $('#modal_submit').html("Share");
+      return;
+    }
+    var data_srt = "location_id=" + location_id + "&user_id_arr=" + user_id_arr;
+    $.ajax({
+      type: "POST",
+      url: '/share_old_location',
+      data: data_srt,
+      headers: {
+        'X-CSRF-Token': '<%= form_authenticity_token.to_s %>'
+      },
+      success: function(msg){
+        $('#sharePreviousLocationModal').modal('hide');
+        alert(msg);
+        $('#modal_submit').removeAttr("disabled");
+        $('#modal_submit').html("Share");
+      },complete: function (xhr, status) {
+        if(xhr.status==401){
+          alert(xhr.responseText);
+        }
+        parent.window.location.reload();
+      }
+    });
+  }
 </script>
-
-
-
-

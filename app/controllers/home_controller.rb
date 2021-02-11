@@ -4,7 +4,6 @@ class HomeController < ApplicationController
       @username = current_user.username.capitalize
       user_id = current_user.id.to_i
       @my_shared_locations = SharedLocationRegister.get_all_my_shared_locations(user_id)
-      
   end
 
   def users_list
@@ -20,10 +19,9 @@ class HomeController < ApplicationController
   def publicly_shared_location_by_user
     username = params[:username]
     @username = username.capitalize
-    puts "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
     if params[:username].present?
       user_id = User.where("username = '#{ username }'").take.id
-      @my_shared_locations = SharedLocationRegister.get_all_my_shared_locations(user_id,true)
+      @my_shared_locations = SharedLocationRegister.get_all_my_shared_locations(user_id, true)
     end
   end
 end

@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-	has_many :shared_location_registers, dependent: :destroy
+  has_many :shared_location_registers, dependent: :destroy
   
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
@@ -26,10 +26,9 @@ class User < ApplicationRecord
     response_arr = []
     users_list_obj.each do |user|
       _inner_hash = {}
-      _inner_hash["id"] = user.id
-      _inner_hash["username"] = user.username
-      _inner_hash["email"] = user.email
-      _inner_hash["show_button"] = "<input class='btn-cust' type='button' value='Show' onclick='show_user_shared_location(\"#{ user.username }\")' >"
+      _inner_hash[:id] = user.id
+      _inner_hash[:username] = user.username
+      _inner_hash[:email] = user.email
       response_arr << _inner_hash
     end
     return response_arr

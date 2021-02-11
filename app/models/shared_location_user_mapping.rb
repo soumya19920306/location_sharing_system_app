@@ -1,6 +1,7 @@
 class SharedLocationUserMapping < ApplicationRecord
   belongs_to :shared_location_register
-
+  PUBLIC_USER_ID = 0
+  
   def self.share_location_with_user(location_id,user_id_arr=[])
     previous_shared_user_id_arr = self.user_mapping_data_location_id_wise(location_id).map{ |x| x.shared_user_id } rescue []
     if user_id_arr.length > 0
@@ -23,13 +24,13 @@ class SharedLocationUserMapping < ApplicationRecord
         self.delete_old_location_with_user_mapping_data(location_id)
       end
       #publiclly shared coordinates are 
-      self.insert_location_mapping_with_user(location_id, 0)
+      self.insert_location_mapping_with_user(location_id, PUBLIC_USER_ID)
     end
   end
 
   # Method to fetch existing mapping data for the given location id
   def self.user_mapping_data_location_id_wise(location_id)
-    mapping_data_obj = self.where("shared_location_register_id = #{location_id}") rescue []
+    mapping_data_obj = self.where("shared_location_register_id = #{ location_id }") rescue []
     return mapping_data_obj
   end
 

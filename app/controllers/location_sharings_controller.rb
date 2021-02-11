@@ -8,8 +8,7 @@ class LocationSharingsController < ApplicationController
       latitude = params[:latitude]
       longitude = params[:longitude]
       curren_user_id = current_user.id
-      new_location_id = SharedLocationRegister.register_new_location(latitude,
-                                                      longitude, curren_user_id) 
+      new_location_id = SharedLocationRegister.register_new_location(latitude, longitude, curren_user_id) 
       if params[:user_id_arr].present?
         user_id_arr = params[:user_id_arr].split(',')
         if user_id_arr.length == 1 && user_id_arr[0].downcase == "public"
@@ -23,7 +22,7 @@ class LocationSharingsController < ApplicationController
       end
     else
       render plain: "Can't share location without latitude and longitude."
-    end	
+    end
   end
 
   def show_location
@@ -36,7 +35,7 @@ class LocationSharingsController < ApplicationController
     if params[:location_id].present?
       location_id = params[:location_id]
       SharedLocationRegister.find(location_id).destroy
-      render plain: "Delete completed;"
+      render plain: "Delete completed"
     else
       render plain: "Delete Operation faild"
     end
@@ -49,8 +48,8 @@ class LocationSharingsController < ApplicationController
       if user_id_arr.length == 1 && user_id_arr[0].downcase == "public"
         SharedLocationUserMapping.share_location_with_user(location_id)
       else
-        SharedLocationUserMapping.share_location_with_user(location_id,user_id_arr)
-      end	
+        SharedLocationUserMapping.share_location_with_user(location_id, user_id_arr)
+      end
       render plain: "Share location successfully."
     else
       render plain: "Share Faild."

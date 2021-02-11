@@ -1,15 +1,14 @@
 <style>
-	.modal-full{
-		min-width: 95%;
-		height: 95%;
-	}
+  .modal-full{
+    min-width: 95%;
+    height: 95%;
+  }
 </style>
 
 <%= link_to 'Back', :back %>
 <br>
 <br>
 <br>
-
 <h5>Publicly Shared Location By: <b><%= @username %> </b></h5>
 
 <table class="table table-condensed">
@@ -25,10 +24,10 @@
     <% if @my_shared_locations.present? %>
         <% @my_shared_locations.each do |location| %>
             <tr>
-            <td><%= location['latitude']  %></td>
-            <td><%= location['longitude']  %></td>
-            <td><%= location['updated_at'][0..9]  %></td>
-            <td><%= button_html_creator_for_locations('Show','show_location',location['latitude'],location['longitude']).html_safe  %></td>
+            <td><%= location['latitude'] %></td>
+            <td><%= location['longitude'] %></td>
+            <td><%= location['updated_at'][0..9] %></td>
+            <td><%= button_html_creator_for_location_show('Show', 'show_location', location['latitude'], location['longitude']).html_safe %></td>
             </tr>
         <% end %>
     <% end %>
@@ -53,9 +52,9 @@
 
 <script>
   function show_location(longitude,latitude){
-    var query_str = "longitude="+longitude+"&latitude="+latitude;
-    var iframe=" <iframe src='/show_location?"+query_str+"' class='w-100 h-100'></iframe> "
+    var query_str = "longitude=" + longitude + "&latitude=" + latitude;
+    var iframe=" <iframe src='/show_location?" + query_str + "' class='w-100 h-100'></iframe> "
     $("#showLocationModal .modal-body").html(iframe);
     $(showLocationModal).modal(); 
-	}
+  }
 </script>
