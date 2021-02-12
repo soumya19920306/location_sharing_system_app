@@ -2,7 +2,7 @@ class SharedLocationUserMapping < ApplicationRecord
   belongs_to :shared_location_register
   PUBLIC_USER_ID = 0
   
-  def self.share_location_with_user(location_id,user_id_arr=[])
+  def self.share_location_with_user(location_id, user_id_arr=[])
     previous_shared_user_id_arr = self.user_mapping_data_location_id_wise(location_id).map{ |x| x.shared_user_id } rescue []
     if user_id_arr.length > 0
       #delete userwise
@@ -10,7 +10,7 @@ class SharedLocationUserMapping < ApplicationRecord
         need_to_delete_user_arr = previous_shared_user_id_arr - user_id_arr
         if need_to_delete_user_arr.length > 0
           #delete old records
-          self.delete_old_location_with_user_mapping_data(location_id,need_to_delete_user_arr)
+          self.delete_old_location_with_user_mapping_data(location_id, need_to_delete_user_arr)
         end
       end
 
@@ -35,7 +35,7 @@ class SharedLocationUserMapping < ApplicationRecord
   end
 
   #delte record from shared_location_user_mapping
-  def self.delete_old_location_with_user_mapping_data(location_id,need_to_delete_user_arr=[])
+  def self.delete_old_location_with_user_mapping_data(location_id, need_to_delete_user_arr=[])
     where_str = "shared_location_register_id = #{ location_id } "
     if need_to_delete_user_arr.length > 0
       where_str += " and shared_user_id IN (#{ need_to_delete_user_arr.join(',') })"
@@ -44,7 +44,7 @@ class SharedLocationUserMapping < ApplicationRecord
   end
 
   #insert mapping data user wise
-  def self.insert_location_mapping_with_user(location_id,user_id)
+  def self.insert_location_mapping_with_user(location_id, user_id)
     @shared_location_registers = SharedLocationRegister.find(location_id)
     @mapping_obj = @shared_location_registers.shared_location_user_mappings.new
     @mapping_obj.shared_user_id = user_id

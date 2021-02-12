@@ -14,9 +14,9 @@ import Circle from 'ol/geom/Circle';
 import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
 import { OSM, Vector as VectorSource } from 'ol/source';
 import { Circle as CircleStyle, Fill, Stroke, Style, Icon } from 'ol/style';
-import {OverviewMap, defaults as defaultControls} from 'ol/control';
-import {transform} from 'ol/proj';
-import {toStringHDMS} from 'ol/coordinate';
+import { OverviewMap, defaults as defaultControls } from 'ol/control';
+import { transform } from 'ol/proj';
+import { toStringHDMS } from 'ol/coordinate';
 import Geolocation from 'ol/Geolocation';
 import Point from 'ol/geom/Point';
 
@@ -49,7 +49,7 @@ $(document).on('turbolinks:load', () => {
     target: 'js-map',
     controls: defaultControls({
       attributionOptions: {
-      collapsible: false
+        collapsible: false
       }
     }),
     overlays: [overlay],
@@ -59,7 +59,7 @@ $(document).on('turbolinks:load', () => {
   var geolocation = new Geolocation({
     // enableHighAccuracy must be set to true to have the heading value.
     trackingOptions: {
-    enableHighAccuracy: true,
+      enableHighAccuracy: true,
     },
     projection: view.getProjection(),
     tracking: true

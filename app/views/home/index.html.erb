@@ -147,7 +147,7 @@
 
   function show_location(longitude,latitude){
     var query_str = "longitude=" + longitude + "&latitude=" + latitude;
-    var iframe=" <iframe src='/show_location?" + query_str + "' class='w-100 h-100'></iframe> "
+    var iframe="<iframe src='/show_location?" + query_str + "' class='w-100 h-100'></iframe>";
     $("#showLocationModal .modal-body").html(iframe);
     $(showLocationModal).modal(); 
   } 

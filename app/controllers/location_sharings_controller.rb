@@ -14,7 +14,7 @@ class LocationSharingsController < ApplicationController
         if user_id_arr.length == 1 && user_id_arr[0].downcase == "public"
           SharedLocationUserMapping.share_location_with_user(new_location_id)
         else
-          SharedLocationUserMapping.share_location_with_user(new_location_id,user_id_arr)
+          SharedLocationUserMapping.share_location_with_user(new_location_id, user_id_arr)
         end	
         render plain: "Location shared successfully." 
       else

@@ -26,7 +26,7 @@ class SharedLocationRegister < ApplicationRecord
     return respond_obj
   end
 
-  def self.get_all_my_shared_locations(user_id,is_only_public_sharings = false)
+  def self.get_all_my_shared_locations(user_id, is_only_public_sharings = false)
     where_str = "shared_location_registers.user_id = #{ user_id }"
     if is_only_public_sharings
       where_str += " and shared_location_user_mappings.shared_user_id = 0"

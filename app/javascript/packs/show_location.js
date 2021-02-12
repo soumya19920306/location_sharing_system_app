@@ -6,7 +6,7 @@ import View from 'ol/View';
 import { fromLonLat } from 'ol/proj';
 import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
 import { OSM, Vector as VectorSource } from 'ol/source';
-import {OverviewMap, defaults as defaultControls} from 'ol/control';
+import { OverviewMap, defaults as defaultControls } from 'ol/control';
 import { Circle as CircleStyle, Fill, Stroke, Style, Icon } from 'ol/style';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
